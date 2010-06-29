@@ -22,27 +22,31 @@ namespace tbsys
      * @brief  CLockGuard是一个模板类，它需要CThreadMutex作为它的模板参数
      * 构造函数调用传入参数的lock方法,析构函数调用unlock方法
      */
-    template <class LLOCK>
+    template <class T>
     class CLockGuard
     {
-        public:
-        CLockGuard(LLOCK& lock , bool block = true) : m_lock(lock)
+    public:
+        CLockGuard(const T& lock, bool block = true) : _lock(lock)
         {
-            m_result = block ? m_lock.lock() : m_lock.tryLock();
-        }
-        ~CLockGuard()
-        {
-            m_lock.unlock();
+            _acquired = block ? _lock.lock() : _lock.tryLock();
         }
 
-        bool LockStatus()
+        ~CLockGuard()
         {
-            return (m_result == 0);
+            if (_acquired)
+            {
+                _lock.unlock();
+            }
+        }
+
+        bool acquired() const
+        {
+            return _acquired;
         }
         
     private:
-        LLOCK& m_lock;
-        int m_result;
+        const T& _lock;
+        mutable bool _acquired;
     };
 }
 

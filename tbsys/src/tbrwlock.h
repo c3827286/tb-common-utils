@@ -21,14 +21,21 @@
 
 namespace tbsys
 {
+    enum ELockMode
+    {
+        NO_PRIORITY,
+        WRITE_PRIORITY,
+        READ_PRIORITY
+    };
+
     /** 
      * @brief linux线程 读写锁中的读锁的封装
      */
     class CRLock
     {
     public:
-        CRLock(pthread_rwlock_t* lock) : m_rlock(lock) {}
-        ~CRLock(){}
+        CRLock(pthread_rwlock_t* lock) : _rlock(lock) {}
+        ~CRLock() {}
         
         /** 
          * @brief 加锁
@@ -50,7 +57,7 @@ namespace tbsys
         int unlock() const;
         
     private:
-        mutable pthread_rwlock_t* m_rlock;
+        mutable pthread_rwlock_t* _rlock;
     };
 
     /** 
@@ -59,30 +66,30 @@ namespace tbsys
     class CWLock
     {
     public:
-        CWLock(pthread_rwlock_t* lock) : m_wlock(lock) {}
-        ~CWLock(){}
+        CWLock(pthread_rwlock_t* lock) : _wlock(lock) {}
+        ~CWLock() {}
         
         int lock() const;
         int tryLock() const;
         int unlock() const;
         
     private:
-        mutable pthread_rwlock_t* m_wlock;
+        mutable pthread_rwlock_t* _wlock;
     };    
 
     class CRWLock 
     {
     public:
-        CRWLock();
+        CRWLock(ELockMode lockMode = NO_PRIORITY);
         ~CRWLock();
 
-        CRLock* rlock() const {return m_rlock;}
-        CWLock* wlock() const {return m_wlock;} 
+        CRLock* rlock() const {return _rlock;}
+        CWLock* wlock() const {return _wlock;} 
 
     private:
-        CRLock* m_rlock;
-        CWLock* m_wlock;
-        pthread_rwlock_t m_rwlock;
+        CRLock* _rlock;
+        CWLock* _wlock;
+        pthread_rwlock_t _rwlock;
     };
 
     /** 
@@ -91,7 +98,7 @@ namespace tbsys
     class CRWSimpleLock
     {
     public:
-        CRWSimpleLock();
+        CRWSimpleLock(ELockMode lockMode = NO_PRIORITY);
         ~CRWSimpleLock();
         
         int rdlock();
@@ -101,7 +108,7 @@ namespace tbsys
         int unlock();
         
     private:    
-        pthread_rwlock_t m_rwlock;
+        pthread_rwlock_t _rwlock;
     };
 
     /** 
@@ -110,16 +117,16 @@ namespace tbsys
     class CRLockGuard
     {
     public:
-        CRLockGuard(CRWLock& rwlock, bool block = true) : m_guard((*rwlock.rlock()), block) {}
+        CRLockGuard(CRWLock& rwlock, bool block = true) : _guard((*rwlock.rlock()), block) {}
         ~CRLockGuard(){}
 
-        bool LockStatus()
+        bool acquired()
         {
-            return m_guard.LockStatus();
+            return _guard.acquired();
         }
 
     private:
-        CLockGuard<CRLock> m_guard;
+        CLockGuard<CRLock> _guard;
     };
     
     /** 
@@ -128,16 +135,16 @@ namespace tbsys
     class CWLockGuard
     {
     public:
-        CWLockGuard(CRWLock& rwlock, bool block = true) : m_guard((*rwlock.wlock()), block) {}
+        CWLockGuard(CRWLock& rwlock, bool block = true) : _guard((*rwlock.wlock()), block) {}
         ~CWLockGuard(){}
 
-        bool LockStatus()
+        bool acquired()
         {
-            return m_guard.LockStatus();
+            return _guard.acquired();
         }
 
     private:
-        CLockGuard<CWLock> m_guard;
+        CLockGuard<CWLock> _guard;
     };
 }
 
