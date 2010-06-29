@@ -35,22 +35,22 @@ namespace tbsys
          * 
          * @return 
          */
-        int lock();
+        int lock() const;
         /** 
          * @brief ≥¢ ‘º”À¯
          * 
          * @return 
          */
-        int tryLock();
+        int tryLock() const;
         /** 
          * @brief Ω‚À¯
          * 
          * @return 
          */
-        int unlock();
+        int unlock() const;
         
     private:
-        pthread_rwlock_t* m_rlock;
+        mutable pthread_rwlock_t* m_rlock;
     };
 
     /** 
@@ -62,12 +62,12 @@ namespace tbsys
         CWLock(pthread_rwlock_t* lock) : m_wlock(lock) {}
         ~CWLock(){}
         
-        int lock();
-        int tryLock();
-        int unlock();
+        int lock() const;
+        int tryLock() const;
+        int unlock() const;
         
     private:
-        pthread_rwlock_t* m_wlock;
+        mutable pthread_rwlock_t* m_wlock;
     };    
 
     class CRWLock 
@@ -76,8 +76,8 @@ namespace tbsys
         CRWLock();
         ~CRWLock();
 
-        CRLock* rlock() {return m_rlock;}
-        CWLock* wlock() {return m_wlock;} 
+        CRLock* rlock() const {return m_rlock;}
+        CWLock* wlock() const {return m_wlock;} 
 
     private:
         CRLock* m_rlock;
