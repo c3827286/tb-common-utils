@@ -17,32 +17,32 @@
 
 using namespace tbsys;
 
-int CRLock::lock()
+int CRLock::lock() const
 {
     return pthread_rwlock_rdlock(m_rlock);
 }
 
-int CRLock::tryLock()
+int CRLock::tryLock() const
 {
     return pthread_rwlock_tryrdlock(m_rlock) ;
 }
 
-int CRLock::unlock()
+int CRLock::unlock() const
 {
     return pthread_rwlock_unlock(m_rlock);
 }
 
-int CWLock::lock()
+int CWLock::lock() const
 {
     return pthread_rwlock_wrlock(m_wlock) ;
 }
 
-int CWLock::tryLock()
+int CWLock::tryLock() const
 {
     return pthread_rwlock_trywrlock(m_wlock);
 }
 
-int CWLock::unlock()
+int CWLock::unlock() const
 {
     return pthread_rwlock_unlock(m_wlock);
 }
