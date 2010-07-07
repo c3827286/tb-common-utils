@@ -135,7 +135,7 @@ string CNetUtil::addrToString(uint64_t ipport)
 uint64_t CNetUtil::strToAddr(const char *ip, int port)
 {
     uint32_t nip = 0;
-    char *p = strchr(ip, ':');
+    const char *p = strchr(ip, ':');
     if (p != NULL && p>ip) {
         int len = p-ip;
         if (len>64) len = 64;

@@ -14,6 +14,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 
 using namespace tbsys;
 
@@ -52,4 +53,5 @@ int main(int argc, char *argv[])
                 
     return 0;
 }
+
 
