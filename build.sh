@@ -5,6 +5,11 @@ if [ -z $TBLIB_ROOT ]; then
     exit;
 fi
 
+if [ ${TBLIB_ROOT#/} = ${TBLIB_ROOT} ]; then
+    echo "TBLIB_ROOT must be absolute path!!";
+    exit 1
+fi
+
 REAL_FILE=`readlink -f $0`
 cd `dirname $REAL_FILE`
 BASE_HOME="`pwd`"
