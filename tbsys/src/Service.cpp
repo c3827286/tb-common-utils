@@ -138,7 +138,7 @@ int Service::main(int argc,char*argv[])
                 argv[i] = argv[i+2];
             }
             argc -=2;
-            if ( _configFile.size() < 0 || _configFile.empty() )
+            if ( _configFile.size() <= 0 )
             {
                  cerr<<":--config|-f must be followed an argument,argument is not null"<<endl;
                  return EXIT_FAILURE;
@@ -160,7 +160,7 @@ int Service::main(int argc,char*argv[])
                 argv[i] = argv[i+2];
             }
             argc -=2;
-            if ( _cmd.size() < 0 || _cmd.empty() )
+            if ( _cmd.size() <= 0 )
             {
                 cerr<<":--cmd|-k must be followed an argument,argument is not null"<<endl;
                 return EXIT_FAILURE;
@@ -206,7 +206,7 @@ int Service::main(int argc,char*argv[])
         cerr<<":--noclose must be whith --daemon..."<<endl;
         return EXIT_FAILURE;
     }
-    if ( _pidFile.size() > 0 && !_pidFile.empty() && !daemonize )
+    if ( _pidFile.size() > 0 && !daemonize )
     {
         cerr<<":--pidfile|-p must be whith --daemon..."<<endl;
         return EXIT_FAILURE;
@@ -214,7 +214,7 @@ int Service::main(int argc,char*argv[])
     
     if ( daemonize )
     {
-        if ( _pidFile.size() <= 0 || _pidFile.empty() )
+        if ( _pidFile.size() <= 0 )
         {
             cerr<<":--daemon muste be whith --pidfile|-p..."<<endl;
             return EXIT_FAILURE;
@@ -222,7 +222,7 @@ int Service::main(int argc,char*argv[])
         configureDaemon(changeDir,closeFiles);
     }
 
-    if ( _cmd.size() < 0 || _cmd.empty() )
+    if ( _cmd.size() <= 0 )
     {
         cerr<<":must be with --cmd|-k,-cmd|-k must be followed an argument[start|stop] ,argument is not null"<<endl;
         return EXIT_FAILURE;
@@ -230,7 +230,7 @@ int Service::main(int argc,char*argv[])
 
     if ( _cmd.compare("stop") == 0 )
     {
-        if ( _pidFile.size() <= 0 || _pidFile.empty() )
+        if ( _pidFile.size() <= 0 )
         {
             cerr<<":muste be whith --pidfile|-p..."<<endl;
             return EXIT_FAILURE;
@@ -441,7 +441,7 @@ int Service::runDaemon( int argc ,char* argv[] )
 {
     assert(_service );
 
-    if ( _pidFile.size() <= 0 || _pidFile.empty() )
+    if ( _pidFile.size() <= 0 )
     {
         cerr<<":muste be whith --pidfile..."<<endl;
         return EXIT_FAILURE;
