@@ -28,15 +28,12 @@ namespace tbsys
     public:
         CLockGuard(const T& lock, bool block = true) : _lock(lock)
         {
-            _acquired = block ? _lock.lock() : _lock.tryLock();
+            _acquired = !(block ? _lock.lock() : _lock.tryLock());
         }
 
         ~CLockGuard()
         {
-            if (_acquired)
-            {
-                _lock.unlock();
-            }
+            if (_acquired) _lock.unlock();
         }
 
         bool acquired() const
