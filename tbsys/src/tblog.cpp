@@ -31,6 +31,7 @@ CLogger::CLogger() {
     _maxFileIndex = 0;
     pthread_mutex_init(&_fileSizeMutex, NULL );
     pthread_mutex_init(&_fileIndexMutex, NULL );
+    _flag = false;
 }
 
 CLogger::~CLogger() {
@@ -54,7 +55,7 @@ void CLogger::setLogLevel(const char *level) {
     }
 }
 
-void CLogger::setFileName(const char *filename) {
+void CLogger::setFileName(const char *filename, bool flag) {
     if (_name) {
         if (_fd!=-1) close(_fd);
         free(_name);
@@ -62,10 +63,22 @@ void CLogger::setFileName(const char *filename) {
     }
     _name = strdup(filename);
     int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
-    dup2(fd, _fd);
-    dup2(fd, 1);
-    if (_fd != 2) dup2(fd, 2);
-    close(fd);
+    _flag = flag;
+    if (!_flag)
+    {
+      dup2(fd, _fd);
+      dup2(fd, 1);
+      if (_fd != 2) dup2(fd, 2);
+      close(fd);
+    }
+    else
+    {
+      if (_fd != 2)
+      { 
+        close(_fd);
+      }
+      _fd = fd;
+    }
 }
 
 void CLogger::logMessage(int level,const char *file, int line, const char *function,const char *fmt, ...) {
@@ -153,10 +166,21 @@ void CLogger::rotateLog(const char *filename, const char *fmt) {
         rename(filename, oldLogFile);
     }
     int fd = open(filename, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
-    dup2(fd, _fd);
-    dup2(fd, 1);
-    if (_fd != 2) dup2(fd, 2);
-    close(fd);
+    if (!_flag)
+    {
+      dup2(fd, _fd);
+      dup2(fd, 1);
+      if (_fd != 2) dup2(fd, 2);
+      close(fd);
+    }
+    else
+    {
+      if (_fd != 2)
+      { 
+        close(_fd);
+      }
+      _fd = fd;
+    }
 }
 
 void CLogger::checkFile()
@@ -169,10 +193,21 @@ void CLogger::checkFile()
     if ((err == -1 && errno == ENOENT)
         || (err == 0 && (stFile.st_dev != stFd.st_dev || stFile.st_ino != stFd.st_ino))) {
         int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
-        dup2(fd, _fd);
-        dup2(fd, 1);
-        if (_fd != 2) dup2(fd, 2);
-        close(fd);
+        if (!_flag)
+        {
+          dup2(fd, _fd);
+          dup2(fd, 1);
+          if (_fd != 2) dup2(fd, 2);
+          close(fd);
+        }
+        else
+        {
+          if (_fd != 2)
+          { 
+            close(_fd);
+          }
+          _fd = fd;
+        }
     }
 }
 
