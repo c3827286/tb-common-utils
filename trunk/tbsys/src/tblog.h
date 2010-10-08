@@ -78,7 +78,7 @@ public:
      * 
      * @param filename 日志文件的名称
      */
-    void setFileName(const char *filename);
+    void setFileName(const char *filename, bool flag = false);
     /** 
      * @brief 检测文件是否已经打开,标准输出,错误输出重定向
      */
@@ -105,6 +105,7 @@ private:
     int _check;
     size_t _maxFileIndex;
     int64_t _maxFileSize;
+    bool _flag;
 
 public:
     static CLogger _logger;
