@@ -171,9 +171,10 @@ void Transport::timeoutLoop() {
 
                 IOComponent *ioc = tmpList;
                 tmpList = tmpList->_next;
-                TBSYS_LOG(INFO, "DELIOC, %s, IOCount:%d, IOC:%p\n",
+                TBSYS_LOG(DEBUG, "DELIOC, %s, IOCount:%d, IOC:%p\n",
                           ioc->getSocket()->getAddr().c_str(), _iocListCount, ioc);
                 delete ioc;
+                ioc = NULL;
             } else {
                 tmpList = tmpList->_next;
             }
@@ -389,7 +390,7 @@ void Transport::addComponent(IOComponent *ioc, bool readOn, bool writeOn) {
     Socket *socket = ioc->getSocket();
     ioc->setSocketEvent(&_socketEvent);
     _socketEvent.addEvent(socket, readOn, writeOn);
-    TBSYS_LOG(INFO, "ADDIOC, SOCK: %d, %s, RON: %d, WON: %d, IOCount:%d, IOC:%p\n",
+    TBSYS_LOG(DEBUG, "ADDIOC, SOCK: %d, %s, RON: %d, WON: %d, IOCount:%d, IOC:%p\n",
               socket->getSocketHandle(), ioc->getSocket()->getAddr().c_str(),
               readOn, writeOn, _iocListCount, ioc);
 }
@@ -438,7 +439,7 @@ void Transport::removeComponent(IOComponent *ioc) {
     _iocListChanged = true;
     _iocListCount --;
 
-    TBSYS_LOG(INFO, "RMIOC, %s IOCount:%d, IOC:%p\n",
+    TBSYS_LOG(DEBUG, "RMIOC, %s IOCount:%d, IOC:%p\n",
               ioc->getSocket()->getAddr().c_str(),
               _iocListCount, ioc);
 }
