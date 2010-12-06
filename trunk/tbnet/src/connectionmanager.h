@@ -17,11 +17,11 @@
 #define TBNET_CONNECTION_MANAGER_H_
 
 #include <ext/hash_map>
-using namespace __gnu_cxx;
+//using namespace __gnu_cxx;
 
 namespace tbnet {
 
-typedef hash_map<uint64_t, Connection*, hash<int> > TBNET_CONN_MAP;
+typedef __gnu_cxx::hash_map<uint64_t, Connection*, __gnu_cxx::hash<int> > TBNET_CONN_MAP;
 
 class ConnectionManager {
 public:
