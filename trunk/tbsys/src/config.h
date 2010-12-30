@@ -21,16 +21,16 @@
 #include "stringutil.h"
 #include "tblog.h"
 
-using namespace std;
-using namespace __gnu_cxx;
+//using namespace std;
+//using namespace __gnu_cxx;
 
 namespace tbsys {
 /** 
 * @brief 生成string的hash值 
 */
     struct str_hash {
-        size_t operator()(const string& str) const {
-            return __stl_hash_string(str.c_str());
+        size_t operator()(const std::string& str) const {
+            return __gnu_cxx::__stl_hash_string(str.c_str());
         }
     };
     /** 
@@ -41,9 +41,9 @@ namespace tbsys {
             return strcmp(s1, s2) == 0;
         }
     };
-    typedef hash_map<string, string, str_hash> STR_STR_MAP;
+    typedef __gnu_cxx::hash_map<std::string, std::string, str_hash> STR_STR_MAP;
     typedef STR_STR_MAP::iterator STR_STR_MAP_ITER;
-    typedef hash_map<string, STR_STR_MAP*, str_hash> STR_MAP;
+    typedef __gnu_cxx::hash_map<std::string, STR_STR_MAP*, str_hash> STR_MAP;
     typedef STR_MAP::iterator STR_MAP_ITER;
     
     #define TBSYS_CONFIG tbsys::CConfig::getCConfig()
@@ -59,19 +59,19 @@ namespace tbsys {
             // 加载一个文件
             int load(const char *filename);
             // 取一个字符串
-            const char *getString(const char *section, const string& key, const char *d = NULL);
+            const char *getString(const char *section, const std::string& key, const char *d = NULL);
             // 取一string列表
-            vector<const char*> getStringList(const char *section, const string& key);
+            std::vector<const char*> getStringList(const char *section, const std::string& key);
             // 取一个整型
-            int getInt(char const *section, const string& key, int d = 0);
+            int getInt(char const *section, const std::string& key, int d = 0);
             // 取一整型列表
-            vector<int> getIntList(const char *section, const string& key);
+            std::vector<int> getIntList(const char *section, const std::string& key);
             // 取一section下所有的key
-            int getSectionKey(const char *section, vector<string> &keys);
+            int getSectionKey(const char *section, std::vector<std::string> &keys);
             // 得到所有section的名字
-            int getSectionName(vector<string> &sections);
+            int getSectionName(std::vector<std::string> &sections);
             // 完整的配置文件字符串
-            string toString();
+            std::string toString();
             // 得到静态实例
             static CConfig& getCConfig();
             

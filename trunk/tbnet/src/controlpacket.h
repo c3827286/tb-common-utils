@@ -15,6 +15,9 @@
 
 #ifndef TBNET_CONTROL_PACKET_H_
 #define TBNET_CONTROL_PACKET_H_
+#ifndef UNUSED
+#define UNUSED(v) ((void)(v))
+#endif
 
 namespace tbnet {
 
@@ -54,6 +57,7 @@ public:
      * 组装
      */
     bool encode(DataBuffer *output) {
+      UNUSED(output);
         return false;
     }
 
@@ -61,6 +65,8 @@ public:
      * 解开
      */
     bool decode(DataBuffer *input, PacketHeader *header) {
+      UNUSED(input);
+      UNUSED(header);
         return false;
     }
 

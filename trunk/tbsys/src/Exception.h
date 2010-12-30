@@ -21,7 +21,7 @@
 
 #include "tbsys.h"
 
-using namespace std;
+//using namespace std;
 
 namespace tbutil
 {

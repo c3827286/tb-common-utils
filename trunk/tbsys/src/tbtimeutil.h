@@ -34,6 +34,10 @@ public:
      */
     static int64_t getTime();
     /**
+     * 得到单调递增的时间
+     */
+    static int64_t getMonotonicTime();
+    /**
      * 把int转成20080101101010的格式
      */ 
     static char *timeToStr(time_t t, char *dest);

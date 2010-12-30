@@ -12,7 +12,7 @@
  *   duolong <duolong@taobao.com>
  *
  */
-#include <stdio.h>
+
 #include <tbnetutil.h>
 #include <ext/hash_map>
 #include <set>

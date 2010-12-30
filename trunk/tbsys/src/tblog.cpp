@@ -90,7 +90,8 @@ void CLogger::logMessage(int level,const char *file, int line, const char *funct
     
     time_t t;
     time(&t);
-    struct tm *tm = ::localtime((const time_t*)&t);
+    struct tm tm;
+    ::localtime_r((const time_t*)&t, &tm);
     
     char data1[4000];
     char buffer[5000];
@@ -103,13 +104,13 @@ void CLogger::logMessage(int level,const char *file, int line, const char *funct
     int size;
     if (level < TBSYS_LOG_LEVEL_INFO) {
         size = snprintf(buffer,5000,"[%04d-%02d-%02d %02d:%02d:%02d] %-5s %s (%s:%d) %s\n",
-            tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-            tm->tm_hour, tm->tm_min, tm->tm_sec,
+            tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+            tm.tm_hour, tm.tm_min, tm.tm_sec,
             _errstr[level], function, file, line, data1);
     } else {
         size = snprintf(buffer,5000,"[%04d-%02d-%02d %02d:%02d:%02d] %-5s %s:%d %s\n",
-            tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-            tm->tm_hour, tm->tm_min, tm->tm_sec,
+            tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+            tm.tm_hour, tm.tm_min, tm.tm_sec,
             _errstr[level], file, line, data1);
     }
     // 去掉过多的换行
@@ -143,15 +144,16 @@ void CLogger::rotateLog(const char *filename, const char *fmt) {
         char oldLogFile[256];
         time_t t;
         time(&t);
-        struct tm *tm = ::localtime((const time_t*)&t);
+        struct tm tm;
+        localtime_r((const time_t*)&t, &tm);
         if (fmt != NULL) {
             char tmptime[256];
-            strftime(tmptime, sizeof(tmptime), fmt, tm);
+            strftime(tmptime, sizeof(tmptime), fmt, &tm);
             sprintf(oldLogFile, "%s.%s", filename, tmptime);
         } else {
             sprintf(oldLogFile, "%s.%04d%02d%02d%02d%02d%02d",
-                filename, tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-                tm->tm_hour, tm->tm_min, tm->tm_sec);
+                filename, tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+                tm.tm_hour, tm.tm_min, tm.tm_sec);
         }
         if ( _maxFileIndex > 0 ) {
             pthread_mutex_lock(&_fileIndexMutex);

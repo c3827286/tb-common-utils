@@ -149,7 +149,7 @@ namespace tbsys {
     /**
      * 把string以delim分隔开,放到list中
      */
-    void CStringUtil::split(char *str, const char *delim, vector<char*> &list) 
+    void CStringUtil::split(char *str, const char *delim, std::vector<char*> &list) 
     {
         if (str == NULL) 
         {
@@ -269,7 +269,7 @@ namespace tbsys {
     /**
      * 格式化
      */
-    string CStringUtil::formatByteSize(double bytes)
+    std::string CStringUtil::formatByteSize(double bytes)
     {
         static const char _sizeunits[] = "KMGTP";
         char s[16];

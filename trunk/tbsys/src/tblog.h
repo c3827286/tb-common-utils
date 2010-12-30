@@ -28,15 +28,23 @@
 #include <errno.h>
 #include <deque>
 #include <string>
+#include <pthread.h>
+#include <sys/time.h>
 
 #define TBSYS_LOG_LEVEL_ERROR 0
 #define TBSYS_LOG_LEVEL_WARN  1
 #define TBSYS_LOG_LEVEL_INFO  2
 #define TBSYS_LOG_LEVEL_DEBUG 3
 #define TBSYS_LOG_LEVEL(level) TBSYS_LOG_LEVEL_##level, __FILE__, __LINE__, __FUNCTION__
+#define TBSYS_LOG_NUM_LEVEL(level) level, __FILE__, __LINE__, __FUNCTION__
 #define TBSYS_LOGGER tbsys::CLogger::_logger
 #define TBSYS_PRINT(level, ...) TBSYS_LOGGER.logMessage(TBSYS_LOG_LEVEL(level), __VA_ARGS__)
-#define TBSYS_LOG(level, ...) (TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_PRINT(level, __VA_ARGS__) 
+#define TBSYS_LOG_BASE(level, ...) (TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_PRINT(level, __VA_ARGS__) 
+#define TBSYS_LOG(level, _fmt_, args...) ((TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_LOG_BASE(level, "[%ld] " _fmt_, pthread_self(), ##args))
+#define TBSYS_LOG_US(level, _fmt_, args...) \
+  ((TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_LOG_BASE(level, "[%ld][%ld][%ld] " _fmt_, \
+                                                            pthread_self(), tbsys::CLogger::get_cur_tv().tv_sec, \
+                                                            tbsys::CLogger::get_cur_tv().tv_usec, ##args))
 
 namespace tbsys {
 using std::deque;
@@ -98,6 +106,13 @@ public:
      * @param maxFileIndex 保留文件的最大个数
      */
     void setMaxFileIndex( int maxFileIndex= 0x0F);
+
+    static inline struct timeval get_cur_tv()
+    {
+      struct timeval tv;
+      gettimeofday(&tv, NULL);
+      return tv;
+    };
 
 private:
     int _fd;

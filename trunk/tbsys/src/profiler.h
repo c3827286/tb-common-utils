@@ -57,7 +57,6 @@
  * PROFILER_SET_THRESHOLD(threshold); // 设置dump的阀值，当一个计数实例的总计时超过这个阀值时才会dump信息，单位为us，默认为10000us(10ms)
  */
 namespace tbsys { namespace util {
-using namespace std;
 
 /** 
  * @brief 线程特定数据的创建，获取，设置
@@ -82,7 +81,7 @@ private:
 class Entry
 {
     public:
-	Entry(string message, Entry *parent, Entry *first) {
+	Entry(const std::string& message, Entry *parent, Entry *first) {
 	    this->message = message;
 	    this->parent = parent;
 	    this->first = (first == NULL) ? this : first;
@@ -165,7 +164,7 @@ class Entry
 	    return etime > 0;
 	}
 
-	void doSubEntry(string message) {
+	void doSubEntry(const std::string& message) {
 	    Entry *entry = new Entry(message, this, first);
 	    subEntries.push_back(entry);
 	}
@@ -181,16 +180,16 @@ class Entry
 		return se;
 	}
 
-	string toString() {
+  std::string toString() {
 	    return toString("", "");
 	}
-	string toString(string pre1, string pre2) {
-	    ostringstream ss;
+  std::string toString(const std::string& pre1, const std::string& pre2) {
+    std::ostringstream ss;
 	    toString(pre1, pre2, ss);
 	    return ss.str();
 	}
 
-	string toString(string pre1, string pre2, ostringstream &ss) {
+  std::string toString(const std::string& pre1, const std::string& pre2, std::ostringstream &ss) {
 	    ss<<pre1;
 
 	    if (isReleased()) {
@@ -203,7 +202,7 @@ class Entry
 
 	    for (size_t i=0; i<subEntries.size(); i++) {
 		Entry *ent = subEntries[i];
-		ss<<endl;
+		ss<<std::endl;
 
 		if (i == 0)
 		    ss<<ent->toString(pre2 + "+---", pre2 + "|  ");
@@ -222,9 +221,9 @@ class Entry
 	    return time.tv_sec * 1000000 + time.tv_usec;
 	}
 
-	string message;
+  std::string message;
     private:
-	vector<Entry *> subEntries;
+  std::vector<Entry *> subEntries;
 	Entry *parent;
 	Entry *first;
 	uint64_t stime;
@@ -241,13 +240,13 @@ class Profiler
     public:
 	Profiler();
 
-	void start(string description);
+	void start(const std::string& description);
 
 	void stop();
 
 	void reset();
 
-	void begin(string description);
+	void begin(const std::string& description);
 
 	void end();
 

@@ -51,7 +51,7 @@ public:
     /*
      * 得到Channel ID
      */
-    uint32_t getChannelId() {
+    uint32_t getChannelId() const {
         return _packetHeader._chid;
     }
 
@@ -65,7 +65,7 @@ public:
     /*
      * 得到PCode
      */
-    int getPCode() {
+    int getPCode() const {
         return _packetHeader._pcode;
     }
 
@@ -119,7 +119,7 @@ public:
     /*
      * 超时时间
      */
-    int64_t getExpireTime() {
+    int64_t getExpireTime() const {
         return _expireTime;
     }
 
@@ -138,14 +138,14 @@ public:
     /*
      * 得到Channel
      */
-    Channel *getChannel() {
+    Channel *getChannel() const {
         return _channel;
     }
 
     /*
      * 得到next
      */
-    Packet *getNext() {
+    Packet *getNext() const {
         return _next;
     }
 

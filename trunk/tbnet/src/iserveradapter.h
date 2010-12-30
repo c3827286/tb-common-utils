@@ -16,6 +16,10 @@
 #ifndef TBNET_ISERVERADAPTER_H
 #define TBNET_ISERVERADAPTER_H
 
+#ifndef UNUSED
+#define UNUSED(v) ((void)(v))
+#endif
+
 namespace tbnet {
 
 class IServerAdapter {
@@ -26,6 +30,8 @@ public:
     virtual IPacketHandler::HPRetCode handlePacket(Connection *connection, Packet *packet) = 0;
     // 批量packet回调
     virtual bool handleBatchPacket(Connection *connection, PacketQueue &packetQueue) {
+      UNUSED(packetQueue);
+      UNUSED(connection);
         return false;
     }
     // 构造函数

@@ -16,7 +16,7 @@
 #ifndef TBSYS_FILE_QUEUE_THREAD_H
 #define TBSYS_FILE_QUEUE_THREAD_H
 
-using namespace std;
+//using namespace std;
 
 namespace tbsys {
 	/** 

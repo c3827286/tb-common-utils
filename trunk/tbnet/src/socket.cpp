@@ -300,7 +300,7 @@ bool Socket::setSoBlocking(bool blockingEnabled) {
 /*
  * 得到ip地址, 写到tmp上
  */
-string Socket::getAddr() {
+std::string Socket::getAddr() {
     char dest[32];
     unsigned long ad = ntohl(_address.sin_addr.s_addr);
     sprintf(dest, "%d.%d.%d.%d:%d",

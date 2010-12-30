@@ -17,6 +17,9 @@
 #define TBNET_CONNECTION_H_
 
 #define READ_WRITE_SIZE 8192
+#ifndef UNUSED
+#define UNUSED(v) ((void)(v))
+#endif
 
 namespace tbnet {
 
@@ -88,7 +91,7 @@ public:
      * 设置写完是否关闭, 只TCP要用
      */
     virtual void setWriteFinishClose(bool v) {
-        ;
+      UNUSED(v);
     }
 
     /*
