@@ -18,7 +18,7 @@
 
 #include <queue>
 
-using namespace std;
+//using namespace std;
 
 namespace tbsys {
         
@@ -44,7 +44,7 @@ namespace tbsys {
                 int len;
             } data_pair;
             // queue
-            queue<data_pair*> _queue;            
+            std::queue<data_pair*> _queue;            
             
         protected:
             // Ïß³ÌËø

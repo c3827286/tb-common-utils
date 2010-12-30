@@ -167,15 +167,16 @@ void PacketQueueThread::run(tbsys::CThread *thread, void *arg) {
         if (ret) delete packet;
     }
     if (_waitFinish) { // 把queue中所有的task做完
+      bool ret = true;
         _cond.lock();
         while (_queue.size() > 0) {
             packet = _queue.pop();
             _cond.unlock();
-
+            ret = true;
             if (_handler) {
-                _handler->handlePacketQueue(packet, _args);
+                ret = _handler->handlePacketQueue(packet, _args);
             }
-            delete packet;
+            if (ret) delete packet;
 
             _cond.lock();
         }

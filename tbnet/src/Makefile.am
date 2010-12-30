@@ -1,7 +1,7 @@
 AM_CPPFLAGS=-I$(TBLIB_ROOT)/include/tbsys
 source_list=channel.cpp channelpool.cpp connection.cpp controlpacket.cpp defaultpacketstreamer.cpp epollsocketevent.cpp httppacketstreamer.cpp httprequestpacket.cpp httpresponsepacket.cpp iocomponent.cpp packet.cpp packetqueue.cpp packetqueuethread.cpp serversocket.cpp socket.cpp socketevent.cpp stats.cpp tcpacceptor.cpp tcpcomponent.cpp tcpconnection.cpp transport.cpp udpcomponent.cpp udpconnection.cpp connectionmanager.cpp
 
-AM_LDFLAGS="-lpthread"
+AM_LDFLAGS="-lpthread -lrt"
 test_sources=
 lib_LTLIBRARIES=libtbnet.la
 libtbnet_la_SOURCES=$(source_list)

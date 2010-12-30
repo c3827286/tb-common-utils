@@ -246,9 +246,9 @@ public:
         return t;
     }
 
-private:
-
     Time(Int64);
+
+private:
 
     Int64 _usec;
 };

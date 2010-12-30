@@ -33,7 +33,7 @@ namespace tbsys
 
         ~CLockGuard()
         {
-            if (_acquired) _lock.unlock();
+            _lock.unlock();
         }
 
         bool acquired() const

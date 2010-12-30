@@ -13,9 +13,7 @@
  *
  */
 
-#include <stdio.h>
 #include <stringutil.h>
-#include <stdint.h>
 
 using namespace tbsys;
 

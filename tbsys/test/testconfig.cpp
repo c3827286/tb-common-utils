@@ -14,9 +14,9 @@
  */
 
 #include <config.h>
-#include <stdint.h>
 
 using namespace tbsys;
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -53,5 +53,4 @@ int main(int argc, char *argv[])
                 
     return 0;
 }
-
 

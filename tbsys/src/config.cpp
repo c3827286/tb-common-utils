@@ -14,6 +14,7 @@
  */
 
 #include "config.h"
+using namespace std;
 
 namespace tbsys {
     
@@ -278,8 +279,8 @@ namespace tbsys {
     	        string s = it1->second.c_str();
                 result += "    " + it1->first + " = " + s + "\n";
                 if (s.size() != it1->second.size()) {
-                    const char *data = it1->second.data();
-                    const char *p = NULL;
+                    char *data = (char*)it1->second.data();
+                    char *p = NULL;
                     for(int i=0; i<(int)it1->second.size(); i++) {
                         if (data[i] != '\0') continue;
                         if (p) result += "    " + it1->first + " = " + p + "\n";

@@ -31,7 +31,7 @@
 #include <linux/unistd.h>
 #include <string>
 
-using namespace std;
+//using namespace std;
 
 namespace tbsys {
 /** 
@@ -68,7 +68,7 @@ public:
     /**
      * 把uint64转成字符串
      */
-    static string addrToString(uint64_t ipport);
+    static std::string addrToString(uint64_t ipport);
     /**
      * 把ip,port转成uint64_t
      */

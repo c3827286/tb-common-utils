@@ -84,6 +84,7 @@ class CThreadGuard
 public:
     CThreadGuard(CThreadMutex *mutex)
     {
+      _mutex = NULL;
         if (mutex) {
             _mutex = mutex;
             _mutex->lock();

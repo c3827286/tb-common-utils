@@ -27,6 +27,11 @@
 #include <vector>
 #include <string>
 
+#ifndef UNUSED
+#define UNUSED(v) ((void)(v))
+#endif
+
+
 namespace tbsys {
 class CConfig;
 class CFileUtil;

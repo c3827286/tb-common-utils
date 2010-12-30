@@ -15,6 +15,7 @@
 
 #ifndef TBNET_SOCKET_H_
 #define TBNET_SOCKET_H_
+#include <string>
 
 namespace tbnet {
 
@@ -157,7 +158,7 @@ public:
     /*
      * 得到ip地址, 写到tmp上
      */
-    string getAddr();
+    std::string getAddr();
 
     /*
      * 得到64位数字的ip地址

@@ -26,7 +26,7 @@ namespace tbsys
 	    status = 1; // default enable
 	}
 
-	void Profiler::start(string description) {
+	void Profiler::start(const string& description) {
 	    if (entry.get() != NULL)
 		reset();
 
@@ -44,7 +44,7 @@ namespace tbsys
 	    }
 	}
 
-	void Profiler::begin(string description) {
+	void Profiler::begin(const string& description) {
 	    Entry *ce = getCurrentEntry();
 	    if(ce != NULL)
 		ce->doSubEntry(description);

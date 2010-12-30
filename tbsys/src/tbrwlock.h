@@ -117,7 +117,7 @@ namespace tbsys
     class CRLockGuard
     {
     public:
-        CRLockGuard(CRWLock& rwlock, bool block = true) : _guard((*rwlock.rlock()), block) {}
+        CRLockGuard(const CRWLock& rwlock, bool block = true) : _guard((*rwlock.rlock()), block) {}
         ~CRLockGuard(){}
 
         bool acquired()
@@ -135,7 +135,7 @@ namespace tbsys
     class CWLockGuard
     {
     public:
-        CWLockGuard(CRWLock& rwlock, bool block = true) : _guard((*rwlock.wlock()), block) {}
+        CWLockGuard(const CRWLock& rwlock, bool block = true) : _guard((*rwlock.wlock()), block) {}
         ~CWLockGuard(){}
 
         bool acquired()

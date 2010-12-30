@@ -49,6 +49,8 @@ public:
     void join() {
         if (tid) {
             pthread_join(tid, NULL);
+            tid = 0;
+            pid = 0;
         }
     }
 
