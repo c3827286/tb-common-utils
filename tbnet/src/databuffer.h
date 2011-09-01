@@ -17,6 +17,7 @@
 #define TBNET_DATA_BUFFER_H_
 
 #define MAX_BUFFER_SIZE 2048
+#include <tblog.h>
 
 namespace tbnet {
 
