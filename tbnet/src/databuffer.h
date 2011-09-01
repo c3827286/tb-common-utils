@@ -424,6 +424,10 @@ private:
                     bufsize <<= 1;
 
                 unsigned char *newbuf = (unsigned char *)malloc(bufsize);
+                if (newbuf == NULL)
+                {
+                  TBSYS_LOG(ERROR, "expand data buffer failed, length: %d", bufsize);
+                }
                 assert(newbuf != NULL);
                 if (dlen > 0) {
                     memcpy(newbuf, _pdata, dlen);

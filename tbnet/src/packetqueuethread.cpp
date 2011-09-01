@@ -69,12 +69,12 @@ void PacketQueueThread::stop(bool waitFinish) {
 // block==true, this thread can wait util _queue.size less than maxQueueLen
 // otherwise, return false directly, client must be free this packet.
 bool PacketQueueThread::push(Packet *packet, int maxQueueLen, bool block) {
-    // 是停止就不允许放了
-    if (_stop) {
+    // if queue stoped or not started yet, free packet
+    if (_stop || _thread == NULL) {
         delete packet;
         return true;
     }
-    // 是否要限制push长度
+    // check max length of this queue
     if (maxQueueLen>0 && _queue._size >= maxQueueLen) {
         _pushcond.lock();
         _waiting = true;

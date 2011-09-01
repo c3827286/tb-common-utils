@@ -87,10 +87,14 @@ Channel *ChannelPool::allocChannel() {
     }
     _useListTail = channel;
 
-    // 生成id
+    // generate channel id
     uint32_t id = atomic_add_return(1, &ChannelPool::_globalChannelId);
     id = (id & 0x0FFFFFFF);
-    if (id == 0) id = 1;    // 确保ID>0
+    if (id == 0)
+    {
+      id = 1;
+      atomic_set(&ChannelPool::_globalChannelId, 1);
+    }
     channel->_id = id;
     channel->_handler = NULL;
     channel->_args = NULL;
