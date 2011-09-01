@@ -59,6 +59,13 @@ public:
         _output.clear();
     }
 
+    /*
+     * clear input buffer
+     */
+    void clearInputBuffer() {
+        _input.clear();
+    }
+
     /**
      * ·¢ËÍsetDisconnState
      */
