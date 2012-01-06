@@ -14,6 +14,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 
 using namespace tbsys;
 using namespace std;
