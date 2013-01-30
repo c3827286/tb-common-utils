@@ -42,8 +42,6 @@ namespace tbnet {
 
 class TimeUtil;
 class Thread;
-class tbsys::CThreadMutex;
-class tbsys::CThreadCond;
 class Runnable;
 class DataBuffer;
 

@@ -1,6 +1,6 @@
 AM_CPPFLAGS=-I$(top_srcdir)/src
-LDADD=$(top_srcdir)/src/.libs/libtbsys.a 
-AM_LDFLAGS="-lrt -lm -lpthread"
+LDADD=$(top_srcdir)/src/.libs/libtbsys.a -lrt -lm -lpthread
+# AM_LDFLAGS=-lrt -lm -lpthread
 
 noinst_PROGRAMS=testfilequeue testqueuethread testconfig \
                 teststringutil testnetutil testlog \

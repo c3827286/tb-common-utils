@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $TBLIB_ROOT ]; then
-    echo "设置 TBLIB_ROOT 的环境变量"
+    echo "please set TBLIB_ROOT varialbe first!!"
     exit;
 fi
 
@@ -42,5 +42,3 @@ if [ "$1" = 'clean' ]; then
 	sh autogen.sh clean
 fi
 
-echo
-echo "安装在 $TBLIB_ROOT 目录下了"
