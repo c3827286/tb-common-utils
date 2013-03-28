@@ -49,6 +49,7 @@ class CFileQueue;
 class IQueueHandler;
 class CQueueThread;
 class CFileQueueThread;
+class WarningBuffer;
 };//end namespace tbsys
 
 //add by duanbing 2009-06-24-11:06
@@ -114,6 +115,7 @@ inline int getSystemErrno()
 #include "tbtimeutil.h"
 #include "process.h"
 #include "tblog.h"
+#include "WarningBuffer.h"
 #include "tbrwlock.h"
 
 #include "runnable.h"

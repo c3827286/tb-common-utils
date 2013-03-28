@@ -41,9 +41,10 @@ public:
     void setThreadCount(int threadCount);
     
     /** 
-     * start
+     * create %_threadCount threads
+     * @return started thread count;
      */
-    void start();
+    int start();
 
     /**
      * stop

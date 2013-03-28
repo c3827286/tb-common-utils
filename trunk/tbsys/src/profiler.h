@@ -135,7 +135,7 @@ class Entry
 	    if (!subEntries.empty())
 		pd = getDuration();
 	    else if (parent && parent->isReleased())
-		pd = parent->getDuration();
+		pd = static_cast<double>(parent->getDuration());
 
 	    if (pd > 0 && d > 0)
 		return d / pd;
@@ -148,7 +148,7 @@ class Entry
 	    double d = getDuration();
 
 	    if (first && first->isReleased())
-		fd = first->getDuration();
+		fd = static_cast<double>(first->getDuration());
 
 	    if (fd > 0 && d > 0)
 		return d / fd;

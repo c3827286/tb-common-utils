@@ -12,9 +12,8 @@
  *   duolong <duolong@taobao.com>
  *
  */
-
-#include <config.h>
 #include <stdint.h>
+#include <config.h>
 
 using namespace tbsys;
 using namespace std;

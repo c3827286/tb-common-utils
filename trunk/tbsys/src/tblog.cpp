@@ -14,13 +14,13 @@
  */
 
 #include "tblog.h"
+#include "WarningBuffer.h"
 #include <string.h>
-
-namespace tbsys 
+#include <sys/uio.h>
+namespace tbsys
 {
 
-const char * const CLogger::_errstr[] = {"ERROR","WARN","INFO","DEBUG"};
-CLogger CLogger::_logger;
+const char * const CLogger::_errstr[] = {"ERROR","USER_ERR","WARN","INFO","TRACE","DEBUG"};
 
 CLogger::CLogger() {
     _fd = fileno(stderr);
@@ -62,7 +62,7 @@ void CLogger::setFileName(const char *filename, bool flag) {
         _name = NULL;
     }
     _name = strdup(filename);
-    int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
+    int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, LOG_FILE_MODE);
     _flag = flag;
     if (!_flag)
     {
@@ -74,66 +74,100 @@ void CLogger::setFileName(const char *filename, bool flag) {
     else
     {
       if (_fd != 2)
-      { 
+      {
         close(_fd);
       }
       _fd = fd;
     }
 }
 
-void CLogger::logMessage(int level,const char *file, int line, const char *function,const char *fmt, ...) {
+  static  char NEWLINE[1] = {'\n'};
+
+  void CLogger::logMessage(int level,const char *file, int line, const char *function, pthread_t tid, const char *fmt, ...) {
     if (level>_level) return;
-    
+
     if (_check && _name) {
         checkFile();
     }
-    
-    time_t t;
-    time(&t);
+
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
     struct tm tm;
-    ::localtime_r((const time_t*)&t, &tm);
-    
-    char data1[4000];
-    char buffer[5000];
+    ::localtime_r((const time_t*)&tv.tv_sec, &tm);
+    const int max_log_size = 10240;
+
+    char data1[max_log_size];
+    char head[128];
 
     va_list args;
     va_start(args, fmt);
-    vsnprintf(data1, 4000, fmt, args);
+    int data_size = vsnprintf(data1, max_log_size, fmt, args);
     va_end(args);
-    
-    int size;
-    if (level < TBSYS_LOG_LEVEL_INFO) {
-        size = snprintf(buffer,5000,"[%04d-%02d-%02d %02d:%02d:%02d] %-5s %s (%s:%d) %s\n",
-            tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
-            tm.tm_hour, tm.tm_min, tm.tm_sec,
-            _errstr[level], function, file, line, data1);
-    } else {
-        size = snprintf(buffer,5000,"[%04d-%02d-%02d %02d:%02d:%02d] %-5s %s:%d %s\n",
-            tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
-            tm.tm_hour, tm.tm_min, tm.tm_sec,
-            _errstr[level], file, line, data1);
+    if (data_size >= max_log_size)
+    {
+      data_size = max_log_size - 1;
     }
-    // 去掉过多的换行
-    while (buffer[size-2] == '\n') size --;
-    buffer[size] = '\0';
-    while (size > 0) {
-        ssize_t success = ::write(_fd, buffer, size);
-        if (success == -1) break;    
-        size -= success;
-    }
+    // remove trailing '\n'
+    while (data1[data_size-1] == '\n') data_size --;
+    data1[data_size] = '\0';
 
+    int head_size;
+    if (level < TBSYS_LOG_LEVEL_INFO) {
+        head_size = snprintf(head,128,"[%04d-%02d-%02d %02d:%02d:%02d.%06ld] %-5s %s (%s:%d) [%ld] ",
+                        tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+                        tm.tm_hour, tm.tm_min, tm.tm_sec, tv.tv_usec,
+                        _errstr[level], function, file, line, tid);
+    } else {
+        head_size = snprintf(head,128,"[%04d-%02d-%02d %02d:%02d:%02d.%06ld] %-5s %s:%d [%ld] ",
+                        tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+                        tm.tm_hour, tm.tm_min, tm.tm_sec, tv.tv_usec,
+                        _errstr[level], file, line, tid);
+    }
+    struct iovec vec[3];
+    vec[0].iov_base = head;
+    vec[0].iov_len = head_size;
+    vec[1].iov_base = data1;
+    vec[1].iov_len = data_size;
+    vec[2].iov_base = NEWLINE;
+    vec[2].iov_len = sizeof(NEWLINE);
+    if (data_size > 0)
+    {
+      ::writev(_fd, vec, 3);
+    }
     if ( _maxFileSize ){
         pthread_mutex_lock(&_fileSizeMutex);
         off_t offset = ::lseek(_fd, 0, SEEK_END);
         if ( offset < 0 ){
             // we got an error , ignore for now
         } else {
-            if ( static_cast<size_t>(offset) >= _maxFileSize ) {
+            if ( static_cast<int64_t>(offset) >= _maxFileSize ) {
                 rotateLog(NULL);
             }
         }
         pthread_mutex_unlock(&_fileSizeMutex);
     }
+
+    // write data to warning buffer for SQL
+    if (WarningBuffer::is_warn_log_on() && data_size > 0)
+    {
+      if (level == TBSYS_LOG_LEVEL_WARN)
+      { // WARN only
+        WarningBuffer *wb = get_tsi_warning_buffer();
+        if (NULL != wb)
+        {
+          wb->append_warning(data1);
+        }
+      }
+      else if (level == TBSYS_LOG_LEVEL_USER_ERROR)
+      {
+        WarningBuffer *wb = get_tsi_warning_buffer();
+        if (NULL != wb)
+        {
+          wb->set_err_msg(data1);
+        }
+      }
+    }
+    return;
 }
 
 void CLogger::rotateLog(const char *filename, const char *fmt) {
@@ -167,7 +201,7 @@ void CLogger::rotateLog(const char *filename, const char *fmt) {
         }
         rename(filename, oldLogFile);
     }
-    int fd = open(filename, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
+    int fd = open(filename, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, LOG_FILE_MODE);
     if (!_flag)
     {
       dup2(fd, _fd);
@@ -178,7 +212,7 @@ void CLogger::rotateLog(const char *filename, const char *fmt) {
     else
     {
       if (_fd != 2)
-      { 
+      {
         close(_fd);
       }
       _fd = fd;
@@ -194,7 +228,7 @@ void CLogger::checkFile()
     int err = stat(_name, &stFile);
     if ((err == -1 && errno == ENOENT)
         || (err == 0 && (stFile.st_dev != stFd.st_dev || stFile.st_ino != stFd.st_ino))) {
-        int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, 0640);
+        int fd = open(_name, O_RDWR | O_CREAT | O_APPEND | O_LARGEFILE, LOG_FILE_MODE);
         if (!_flag)
         {
           dup2(fd, _fd);
@@ -205,7 +239,7 @@ void CLogger::checkFile()
         else
         {
           if (_fd != 2)
-          { 
+          {
             close(_fd);
           }
           _fd = fd;
@@ -213,11 +247,17 @@ void CLogger::checkFile()
     }
 }
 
+CLogger::CLogger& CLogger::getLogger()
+{
+  static CLogger logger;
+  return logger;
+}
+
 void CLogger::setMaxFileSize( int64_t maxFileSize)
 {
                                            // 1GB
     if ( maxFileSize < 0x0 || maxFileSize > 0x40000000){
-        maxFileSize = 0x40000000;//1GB 
+        maxFileSize = 0x40000000;//1GB
     }
     _maxFileSize = maxFileSize;
 }

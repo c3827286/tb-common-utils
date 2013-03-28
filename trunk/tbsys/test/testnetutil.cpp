@@ -17,6 +17,7 @@
 #include <ext/hash_map>
 #include <set>
 #include <stdio.h>
+#include <stdint.h>
 
 using namespace __gnu_cxx;
 using namespace std; 

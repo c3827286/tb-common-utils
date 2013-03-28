@@ -48,16 +48,26 @@ void CDefaultRunnable::setThreadCount(int threadCount)
 }
 
 // start
-void CDefaultRunnable::start() {
+int CDefaultRunnable::start() {
     if (_thread != NULL || _threadCount < 1) {
         TBSYS_LOG(ERROR, "start failure, _thread: %p, threadCount: %d", _thread, _threadCount);
-        return;
+        return 0;
     }
     _thread = new CThread[_threadCount];
-    for (int i=0; i<_threadCount; i++)
+    if (NULL == _thread)
     {
-        _thread[i].start(this, (void*)((long)i));
+        TBSYS_LOG(ERROR, "create _thread object failed, threadCount: %d", _threadCount);
+        return 0;
     }
+    int i = 0;
+    for (; i<_threadCount; i++)
+    {
+        if (!_thread[i].start(this, (void*)((long)i)))
+        {
+          return i;
+        }
+    }
+    return i;
 }
 
 // stop

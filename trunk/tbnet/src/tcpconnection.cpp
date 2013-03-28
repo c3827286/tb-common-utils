@@ -154,6 +154,8 @@ bool TCPConnection::readData() {
         readCnt++;
     }
 
+    _socket->setTcpQuickAck(true);
+
     // 是否为批量回调
     if (_isServer && _serverAdapter->_batchPushPacket && _inputQueue.size() > 0) {
         _serverAdapter->handleBatchPacket(this, _inputQueue);

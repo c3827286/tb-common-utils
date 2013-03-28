@@ -36,7 +36,7 @@
 #include <vector>
 #include <string>
 #include <ext/hash_map>
-#include <tbsys.h>
+#include "tbsys.h"
 
 namespace tbnet {
 

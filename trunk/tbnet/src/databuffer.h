@@ -17,7 +17,6 @@
 #define TBNET_DATA_BUFFER_H_
 
 #define MAX_BUFFER_SIZE 2048
-#include <tblog.h>
 
 namespace tbnet {
 
@@ -53,7 +52,7 @@ public:
     }
 
     int getDataLen() {
-        return (_pfree - _pdata);
+        return static_cast<int32_t>(_pfree - _pdata);
     }
 
     char *getFree() {
@@ -61,7 +60,7 @@ public:
     }
 
     int getFreeLen() {
-        return (_pend - _pfree);
+        return static_cast<int32_t>(_pend - _pfree);
     }
 
     void drainData(int len) {
@@ -94,7 +93,7 @@ public:
             return;
         }
 
-        int dlen = _pfree - _pdata;
+        int dlen = static_cast<int32_t>(_pfree - _pdata);
         if (dlen < 0) dlen = 0;
 
         unsigned char *newbuf = (unsigned char*)malloc(MAX_BUFFER_SIZE);
@@ -124,7 +123,7 @@ public:
     void writeInt16(uint16_t n) {
         expand(2);
         _pfree[1] = (unsigned char)n;
-        n >>= 8;
+        n = static_cast<uint16_t>(n >> 8);
         _pfree[0] = (unsigned char)n;
         _pfree += 2;
     }
@@ -179,7 +178,7 @@ public:
 
     void fillInt16(unsigned char *dst, uint16_t n) {
         dst[1] = (unsigned char)n;
-        n >>= 8;
+        n = static_cast<uint16_t>(n >> 8);
         dst[0] = (unsigned char)n;
     }
 
@@ -215,9 +214,9 @@ public:
      * Ð´×Ö·û´®
      */
     void writeString(const char *str) {
-        int len = (str ? strlen(str) : 0);
+        int len = (str ? static_cast<int32_t>(strlen(str)) : 0);
         if (len>0) len ++;
-        expand(len+sizeof(uint32_t));
+        expand(static_cast<int32_t>(len+sizeof(uint32_t)));
         writeInt32(len);
         if (len>0) {
             memcpy(_pfree, str, len);
@@ -233,7 +232,7 @@ public:
      *Ð´Ò»¸öintÁÐ±í
      */
     void writeVector(const std::vector<int32_t>& v) {
-        const uint32_t iLen = v.size();
+        const uint32_t iLen = static_cast<uint32_t>(v.size());
         writeInt32(iLen);
         for (uint32_t i = 0; i < iLen; ++i) {
              writeInt32(v[i]); 
@@ -241,7 +240,7 @@ public:
     }
 
     void writeVector(const std::vector<uint32_t>& v) {
-        const uint32_t iLen = v.size();
+        const uint32_t iLen = static_cast<uint32_t>(v.size());
         writeInt32(iLen);
         for (uint32_t i = 0; i < iLen; ++i) {
              writeInt32(v[i]);
@@ -249,7 +248,7 @@ public:
     }
 
     void writeVector(const std::vector<int64_t>& v) {
-        const uint32_t iLen = v.size();
+        const uint32_t iLen = static_cast<uint32_t>(v.size());
         writeInt32(iLen);
         for (uint32_t i = 0; i < iLen; ++i) {
              writeInt64(v[i]);
@@ -257,7 +256,7 @@ public:
     }
 
     void writeVector(const std::vector<uint64_t>& v) {
-        const uint32_t iLen = v.size();
+        const uint32_t iLen = static_cast<uint32_t>(v.size());
         writeInt32(iLen);
         for (uint32_t i = 0; i < iLen; ++i) {
              writeInt64(v[i]);
@@ -273,8 +272,8 @@ public:
 
     uint16_t readInt16() {
         uint16_t n = _pdata[0];
-        n <<= 8;
-        n |= _pdata[1];
+        n = static_cast<uint16_t>(n << 8);
+        n = static_cast<uint16_t>(n | _pdata[1]);
         _pdata += 2;
         return n;
     }
@@ -332,7 +331,7 @@ public:
         }
         int slen = readInt32();
         if (_pfree - _pdata < slen) {
-            slen = _pfree - _pdata;
+            slen = static_cast<int32_t>(_pfree - _pdata);
         }
         if (str == NULL && slen > 0) {
             str = (char*)malloc(slen);
@@ -396,7 +395,7 @@ public:
      * Ñ°ÕÒ×Ö·û´®
      */
     int findBytes(const char *findstr, int len) {
-        int dLen = _pfree - _pdata - len + 1;
+        int dLen = static_cast<int32_t>(_pfree - _pdata - len + 1);
         for (int i=0; i<dLen; i++) {
             if (_pdata[i] == findstr[0] && memcmp(_pdata+i, findstr, len) == 0) {
                 return i;
@@ -416,11 +415,11 @@ private:
             _pfree = _pdata = _pstart = (unsigned char*)malloc(len);
             _pend = _pstart + len;
         } else if (_pend - _pfree < need) { // ¿Õ¼ä²»¹»
-            int flen = (_pend - _pfree) + (_pdata - _pstart);
-            int dlen = _pfree - _pdata;
+            int flen = static_cast<int32_t>((_pend - _pfree) + (_pdata - _pstart));
+            int dlen = static_cast<int32_t>(_pfree - _pdata);
 
             if (flen < need || flen * 4 < dlen) {
-                int bufsize = (_pend - _pstart) * 2;
+                int bufsize = static_cast<int32_t>((_pend - _pstart) * 2);
                 while (bufsize - dlen < need)
                     bufsize <<= 1;
 

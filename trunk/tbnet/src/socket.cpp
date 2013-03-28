@@ -273,6 +273,16 @@ bool Socket::setTcpNoDelay(bool noDelay) {
     return rc;
 }
 
+bool Socket::setTcpQuickAck(bool quickAck) {
+  bool rc = false;
+  int quickAckInt = quickAck ? 1 : 0;
+  if (checkSocketHandle()) {
+    rc = (setsockopt(_socketHandle, IPPROTO_TCP, TCP_QUICKACK,
+          (const void *)(&quickAckInt), sizeof(quickAckInt)) == 0);
+  }
+  return rc;
+}
+
 /*
  * ÊÇ·ñ×èÈû
  */

@@ -147,21 +147,6 @@ public:
         return -1;
     }
 
-
-    /**
-     * input Queue
-     */
-    int getInputQueueLength() {
-      return _inputQueue.size();
-    }
-    
-    /**
-     * output Queue
-     */
-    int getOutputQueueLength() {
-      return _outputQueue.size();
-    }
-
 protected:
     void disconnect();
 

@@ -131,6 +131,11 @@ public:
     bool setTcpNoDelay(bool noDelay);
 
     /*
+     * setTcpQuickAck
+     */
+    bool setTcpQuickAck(bool quickAck);
+
+    /*
      * setIntOption
      */
     bool setIntOption(int option, int value);
