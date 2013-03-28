@@ -6,7 +6,7 @@ source_list=config.cpp defaultrunnable.cpp filequeue.cpp \
             Shared.cpp TbThread.cpp StaticMutex.cpp Mutex.cpp\
             Exception.cpp ThreadException.cpp CtrlCHandler.cpp\
             Timer.cpp ThreadPool.cpp Service.cpp\
-            Network.cpp profiler.cpp bytebuffer.cpp
+            Network.cpp profiler.cpp bytebuffer.cpp WarningBuffer.cpp 
 
 AM_LDFLAGS="-lpthread -lm -lrt"
 lib_LTLIBRARIES=libtbsys.la
@@ -22,7 +22,7 @@ include_HEADERS=atomic.h config.h defaultrunnable.h filequeue.h \
                Service.h ThreadException.h Time.h Handle.h Monitor.h\
                RecMutex.h Shared.h TbThread.h Timer.h CtrlCHandler.h\
                Exception.h Mutex.h StaticMutex.h ThreadPool.h Utility.h \
-	       profiler.h bytebuffer.h
+	             profiler.h bytebuffer.h WarningBuffer.h
 
 noinst_PROGRAMS=
 

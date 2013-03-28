@@ -38,6 +38,7 @@ public:
     CThreadMutex() {
         //assert(pthread_mutex_init(&_mutex, NULL) == 0);
         const int iRet = pthread_mutex_init(&_mutex, NULL);
+        (void) iRet;
         assert( iRet == 0 );
     }
 

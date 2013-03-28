@@ -32,15 +32,17 @@
 #include <sys/time.h>
 
 #define TBSYS_LOG_LEVEL_ERROR 0
-#define TBSYS_LOG_LEVEL_WARN  1
-#define TBSYS_LOG_LEVEL_INFO  2
-#define TBSYS_LOG_LEVEL_DEBUG 3
-#define TBSYS_LOG_LEVEL(level) TBSYS_LOG_LEVEL_##level, __FILE__, __LINE__, __FUNCTION__
-#define TBSYS_LOG_NUM_LEVEL(level) level, __FILE__, __LINE__, __FUNCTION__
-#define TBSYS_LOGGER tbsys::CLogger::_logger
+#define TBSYS_LOG_LEVEL_USER_ERROR  1
+#define TBSYS_LOG_LEVEL_WARN  2
+#define TBSYS_LOG_LEVEL_INFO  3
+#define TBSYS_LOG_LEVEL_TRACE 4
+#define TBSYS_LOG_LEVEL_DEBUG 5
+#define TBSYS_LOG_LEVEL(level) TBSYS_LOG_LEVEL_##level, __FILE__, __LINE__, __FUNCTION__, pthread_self()
+#define TBSYS_LOG_NUM_LEVEL(level) level, __FILE__, __LINE__, __FUNCTION__, pthread_self()
+#define TBSYS_LOGGER tbsys::CLogger::getLogger()
 #define TBSYS_PRINT(level, ...) TBSYS_LOGGER.logMessage(TBSYS_LOG_LEVEL(level), __VA_ARGS__)
-#define TBSYS_LOG_BASE(level, ...) (TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_PRINT(level, __VA_ARGS__) 
-#define TBSYS_LOG(level, _fmt_, args...) ((TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_LOG_BASE(level, "[%ld] " _fmt_, pthread_self(), ##args))
+#define TBSYS_LOG_BASE(level, ...) (TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_PRINT(level, __VA_ARGS__)
+#define TBSYS_LOG(level, _fmt_, args...) ((TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_LOG_BASE(level,_fmt_, ##args))
 #define TBSYS_LOG_US(level, _fmt_, args...) \
   ((TBSYS_LOG_LEVEL_##level>TBSYS_LOGGER._level) ? (void)0 : TBSYS_LOG_BASE(level, "[%ld][%ld][%ld] " _fmt_, \
                                                             pthread_self(), tbsys::CLogger::get_cur_tv().tv_sec, \
@@ -50,60 +52,62 @@ namespace tbsys {
 using std::deque;
 using std::string;
 
-/** 
-* @brief 简单的日志系统 
+/**
+* @brief 录貌碌楼碌脛脠脮脰戮脧碌脥鲁
 */
 class           CLogger {
 public:
+
+  static const mode_t LOG_FILE_MODE = 0644;
     CLogger();
     ~CLogger();
-    /** 
-     * @brief 
-     * 
+    /**
+     * @brief
+     *
      * @param filename
      * @param fmt
      */
     void rotateLog(const char *filename, const char *fmt = NULL);
-    /** 
-     * @brief 将日志内容写入文件
-     * 
-     * @param level 日志的级别
-     * @param file  日志内容所在的文件
-     * @param line  日志内容所在的文件的行号
-     * @param function 写入日志内容的函数名称
+    /**
+     * @brief 陆芦脠脮脰戮脛脷脠脻脨麓脠毛脦脛录镁
+     *
+     * @param level 脠脮脰戮碌脛录露卤冒
+     * @param file  脠脮脰戮脛脷脠脻脣霉脭脷碌脛脦脛录镁
+     * @param line  脠脮脰戮脛脷脠脻脣霉脭脷碌脛脦脛录镁碌脛脨脨潞脜
+     * @param function 脨麓脠毛脠脮脰戮脛脷脠脻碌脛潞炉脢媒脙没鲁脝
      * @param fmt
      * @param ...
      */
-    void logMessage(int level, const char *file, int line, const char *function, const char *fmt, ...);
-    /** 
-     * @brief 设置日志的级别
-     * 
-     * @param level DEBUG|WARN|INFO|ERROR
+    void logMessage(int level, const char *file, int line, const char *function, pthread_t tid, const char *fmt, ...) __attribute__ ((format (printf, 7, 8)));
+    /**
+     * @brief 脡猫脰脙脠脮脰戮碌脛录露卤冒
+     *
+     * @param level DEBUG|WARN|INFO|TRACE|ERROR
      */
     void setLogLevel(const char *level);
-    /** 
-     * @brief 设置日志文件的名称
-     * 
-     * @param filename 日志文件的名称
+    /**
+     * @brief 脡猫脰脙脠脮脰戮脦脛录镁碌脛脙没鲁脝
+     *
+     * @param filename 脠脮脰戮脦脛录镁碌脛脙没鲁脝
      */
     void setFileName(const char *filename, bool flag = false);
-    /** 
-     * @brief 检测文件是否已经打开,标准输出,错误输出重定向
+    /**
+     * @brief 录矛虏芒脦脛录镁脢脟路帽脪脩戮颅麓貌驴陋,卤锚脳录脢盲鲁枚,麓铆脦贸脢盲鲁枚脰脴露篓脧貌
      */
     void checkFile();
     void setCheck(int v) {_check = v;}
-    /** 
-     * @brief 设置日志文件文件的大小,达到maxFileSize就新打开一个文件
-     * 如果不设置此项，日志系统会忽略日志滚动
-     * 
-     * @param maxFileSize 日志文件的大小
+    /**
+     * @brief 脡猫脰脙脠脮脰戮脦脛录镁脦脛录镁碌脛麓贸脨隆,麓茂碌陆maxFileSize戮脥脨脗麓貌驴陋脪禄赂枚脦脛录镁
+     * 脠莽鹿没虏禄脡猫脰脙麓脣脧卯拢卢脠脮脰戮脧碌脥鲁禄谩潞枚脗脭脠脮脰戮鹿枚露炉
+     *
+     * @param maxFileSize 脠脮脰戮脦脛录镁碌脛麓贸脨隆
      */
     void setMaxFileSize( int64_t maxFileSize=0x40000000);
-    /** 
-     * @brief 保留最近maxFileIndex个日志文件，超出maxFileIndex个日志文件
-     * 会按时间先后删除,但进程重启后日志系统会按时间先后重新统计
-     * 
-     * @param maxFileIndex 保留文件的最大个数
+    /**
+     * @brief 卤拢脕么脳卯陆眉maxFileIndex赂枚脠脮脰戮脦脛录镁拢卢鲁卢鲁枚maxFileIndex赂枚脠脮脰戮脦脛录镁
+     * 禄谩掳麓脢卤录盲脧脠潞贸脡戮鲁媒,碌芦陆酶鲁脤脰脴脝么潞贸脠脮脰戮脧碌脥鲁禄谩掳麓脢卤录盲脧脠潞贸脰脴脨脗脥鲁录脝
+     *
+     * @param maxFileIndex 卤拢脕么脦脛录镁碌脛脳卯麓贸赂枚脢媒
      */
     void setMaxFileIndex( int maxFileIndex= 0x0F);
 
@@ -114,6 +118,8 @@ public:
       return tv;
     };
 
+    static CLogger& getLogger();
+
 private:
     int _fd;
     char *_name;
@@ -123,14 +129,13 @@ private:
     bool _flag;
 
 public:
-    static CLogger _logger;
     int _level;
 
 private:
     std::deque<std::string> _fileList;
-    static const char *const _errstr[];   
+    static const char *const _errstr[];
     pthread_mutex_t _fileSizeMutex;
-    pthread_mutex_t _fileIndexMutex; 
+    pthread_mutex_t _fileIndexMutex;
 };
 
 }

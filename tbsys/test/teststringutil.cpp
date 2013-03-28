@@ -12,9 +12,8 @@
  *   duolong <duolong@taobao.com>
  *
  */
-
-#include <stringutil.h>
 #include <stdint.h>
+#include <stringutil.h>
 
 using namespace tbsys;
 

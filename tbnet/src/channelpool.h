@@ -74,7 +74,7 @@ public:
      * 被用链表的长度
      */
     int getUseListCount() {
-        return _useMap.size();
+        return static_cast<int32_t>(_useMap.size());
     }
 
     void setExpireTime(Channel *channel, int64_t now); 

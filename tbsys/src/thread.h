@@ -37,10 +37,10 @@ public:
     /**
      * 起一个线程，开始运行
      */
-    void start(Runnable *r, void *a) {
+    bool start(Runnable *r, void *a) {
         runnable = r;
         args = a;
-        pthread_create(&tid, NULL, CThread::hook, this);
+        return 0 == pthread_create(&tid, NULL, CThread::hook, this);
     }
 
     /**
@@ -102,7 +102,7 @@ private:
     #ifdef _syscall0
     static _syscall0(pid_t,gettid)
     #else
-    static pid_t gettid() { return syscall(__NR_gettid);}
+    static pid_t gettid() { return static_cast<pid_t>(syscall(__NR_gettid));}
     #endif
 
 private:

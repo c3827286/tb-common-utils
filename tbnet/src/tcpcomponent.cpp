@@ -114,9 +114,9 @@ void TCPComponent::close() {
             _connection->setDisconnState();
         }
         _socket->close();
-        //if (_connection) {
-        //    _connection->clearInputBuffer(); // clear input buffer after socket closed
-        //}
+        if (_connection) {
+          _connection->clearInputBuffer(); // clear input buffer after socket closed
+        }
         _state = TBNET_CLOSED;
     }
 }
