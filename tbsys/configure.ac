@@ -13,7 +13,7 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 AC_LANG_CPLUSPLUS 
-CXXFLAGS="-g -Wall -Wno-deprecated -Wno-write-strings -fPIC"
+CXXFLAGS="-g -Wall -fPIC"
 
 if test -n "${TBLIB_ROOT}"; then
     ac_default_prefix=${TBLIB_ROOT} 

@@ -22,7 +22,7 @@ namespace tbsys {
     bool CFileUtil::mkdirs(char *szDirPath) 
     {
         struct stat stats;
-        if (lstat (szDirPath, &stats) == 0 && S_ISDIR (stats.st_mode)) 
+        if (stat (szDirPath, &stats) == 0 && S_ISDIR (stats.st_mode)) 
             return true;
     
         mode_t umask_value = umask (0);

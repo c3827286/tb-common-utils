@@ -80,17 +80,23 @@ public:
      */
     void logMessage(int level, const char *file, int line, const char *function, pthread_t tid, const char *fmt, ...) __attribute__ ((format (printf, 7, 8)));
     /**
-     * @brief ÉèÖÃÈÕÖ¾µÄ¼¶±ð
+     * @brief set log putout level
      *
      * @param level DEBUG|WARN|INFO|TRACE|ERROR
-     */
-    void setLogLevel(const char *level);
-    /**
-     * @brief ÉèÖÃÈÕÖ¾ÎÄ¼þµÄÃû³Æ
      *
-     * @param filename ÈÕÖ¾ÎÄ¼þµÄÃû³Æ
+     * @param wf_level set the level putout to wf log file
      */
-    void setFileName(const char *filename, bool flag = false);
+    void setLogLevel(const char *level, const char *wf_level = NULL);
+    /**
+     * @brief set log file name
+     *
+     * @param filename log file name
+     *
+     * @param flag whether to redirect stdout to log file, if false, redirect it
+     *
+     * @param open_wf whether to open wf log file, default close
+     */
+    void setFileName(const char *filename, bool flag = false, bool open_wf = false);
     /**
      * @brief ¼ì²âÎÄ¼þÊÇ·ñÒÑ¾­´ò¿ª,±ê×¼Êä³ö,´íÎóÊä³öÖØ¶¨Ïò
      */
@@ -122,17 +128,21 @@ public:
 
 private:
     int _fd;
+    int _wf_fd;
     char *_name;
     int _check;
     size_t _maxFileIndex;
     int64_t _maxFileSize;
     bool _flag;
+    bool _wf_flag;
 
 public:
     int _level;
+    int _wf_level;
 
 private:
     std::deque<std::string> _fileList;
+    std::deque<std::string> _wf_file_list;
     static const char *const _errstr[];
     pthread_mutex_t _fileSizeMutex;
     pthread_mutex_t _fileIndexMutex;
