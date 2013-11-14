@@ -16,7 +16,6 @@
 #ifndef TBSYS_MEMORY_HPP_
 #define TBSYS_MEMORY_HPP_
 #include <new>
-#include <stddef.h>
 
 namespace tbsys
 {

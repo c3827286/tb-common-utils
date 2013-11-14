@@ -1,11 +1,12 @@
 AM_CPPFLAGS=-I$(top_srcdir)/src
-LDADD=$(top_srcdir)/src/.libs/libtbsys.a -lrt -lm -lpthread
-# AM_LDFLAGS=-lrt -lm -lpthread
+LDADD=$(top_srcdir)/src/.libs/libtbsys.a 
+AM_LDFLAGS="-lrt -lm -lpthread"
 
 noinst_PROGRAMS=testfilequeue testqueuethread testconfig \
                 teststringutil testnetutil testlog \
                 testfileutil testtimeutil testthread\
-                testtimer testthreadpool testService
+                testtimer testthreadpool testService \
+								testwarningbuffer
 
 testfilequeue_SOURCES=testfilequeue.cpp
 testqueuethread_SOURCES=testqueuethread.cpp
@@ -18,4 +19,5 @@ testtimeutil_SOURCES=testtimeutil.cpp
 testthread_SOURCES=testBase.cpp testthread.cpp 
 testtimer_SOURCES=testBase.cpp testTimer.cpp 
 testthreadpool_SOURCES=testBase.cpp testThreadPool.cpp 
-testService_SOURCES=testBase.cpp testService.cpp 
+testService_SOURCES=testBase.cpp testService.cpp
+testwarningbuffer_SOURCES=testwarningbuffer.cpp
