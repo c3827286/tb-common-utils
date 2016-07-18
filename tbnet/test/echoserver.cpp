@@ -36,7 +36,7 @@ public:
     }
     
     /*
-     * 组装
+     * 缁勮
      */
     bool encode(DataBuffer *output) {
         output->writeBytes(_str, strlen(_str));
@@ -46,7 +46,7 @@ public:
     }
 
     /*
-     * 解开
+     * 瑙ｅ紑
      */    
     bool decode(DataBuffer *input, PacketHeader *header)
     {

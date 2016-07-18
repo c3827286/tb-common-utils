@@ -20,7 +20,7 @@ namespace tbsys {
 
 
 	/** 
-	 * @brief Á´±í
+	 * @brief é“¾è¡¨
 	 */
 template <typename NodeT>
 class LinkList

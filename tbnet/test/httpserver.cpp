@@ -18,7 +18,7 @@
 using namespace tbnet;
 
 /**
- * packetµÄserverAdapter
+ * packetçš„serverAdapter
  */
 class HttpServerAdapter : public IServerAdapter
 {
@@ -48,7 +48,7 @@ private:
 };
 
 /*
- * server ·şÎñÆ÷
+ * server æœåŠ¡å™¨
  */
 class HttpServer {
 public:

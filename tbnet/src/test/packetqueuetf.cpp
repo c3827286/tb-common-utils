@@ -56,24 +56,24 @@ void PacketQueueTF::testMoveTo() {
     CPPUNIT_ASSERT_EQUAL(0, packetQueue1.size());
     CPPUNIT_ASSERT_EQUAL(0, packetQueue2.size());
     
-    // 1 ¸ö => null
+    // 1 ä¸ª => null
     packetQueue1.push(new ControlPacket(0));
     packetQueue1.moveTo(&packetQueue2);
     CPPUNIT_ASSERT_EQUAL(0, packetQueue1.size());
     CPPUNIT_ASSERT_EQUAL(1, packetQueue2.size());
     
-    // null => 1¸ö
+    // null => 1ä¸ª
     packetQueue1.moveTo(&packetQueue2);
     CPPUNIT_ASSERT_EQUAL(0, packetQueue1.size());
     CPPUNIT_ASSERT_EQUAL(1, packetQueue2.size());
     
-    // 1¸ö => 1¸ö
+    // 1ä¸ª => 1ä¸ª
     packetQueue1.push(new ControlPacket(0));
     packetQueue1.moveTo(&packetQueue2);
     CPPUNIT_ASSERT_EQUAL(0, packetQueue1.size());
     CPPUNIT_ASSERT_EQUAL(2, packetQueue2.size());
     
-    // pop Á½¸ö
+    // pop ä¸¤ä¸ª
     for(int i=0; i<2; i++) {
         Packet *packet = packetQueue2.pop();
         CPPUNIT_ASSERT(packet != NULL);
